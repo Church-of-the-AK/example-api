@@ -1,0 +1,38 @@
+{
+  "name": "machoapi",
+  "version": "0.0.1",
+  "description": "An API for my bot, Macho.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasonhaxstuff/machoapi.git"
+  },
+  "keywords": [
+    "macho",
+    "discord",
+    "api"
+  ],
+  "author": "jasonhaxstuff",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/jasonhaxstuff/machoapi/issues"
+  },
+  "homepage": "https://github.com/jasonhaxstuff/machoapi#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
+    "passport": "^0.4.0",
+    "passport-openid": "^0.4.0",
+    "pg": "^7.4.3",
+    "request": "^2.87.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.5"
+  }
+}
