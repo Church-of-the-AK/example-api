@@ -41,7 +41,7 @@ passport.deserializeUser(function(identifier: any, done) {
 export function auth (app: Application, client: Client) {
   app.use(passport.initialize())
 
-  app.get('/discordauth', async function discordAuth(req, res) {
+  app.get('/discordauth', async function discordAuth(req: Request, res: Response) {
     console.log('GET /discordauth')
     res.set('Access-Control-Allow-Origin', '*')
     const redirect = req.query.redirect
@@ -141,10 +141,7 @@ export function auth (app: Application, client: Client) {
     })
   )
 
-  app.get('/steamauth/return', passport.authenticate('openid'), function(
-    req,
-    res
-  ) {
+  app.get('/steamauth/return', passport.authenticate('openid'), function (req: Request, res: Response) {
     console.log('GET /steamauth/return')
     if (req.user) {
       res.redirect(`http://www.macho.ga/?steamid=${req.user.steamId}`)
