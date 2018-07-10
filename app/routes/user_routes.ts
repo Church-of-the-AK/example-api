@@ -1,9 +1,10 @@
-const code = require('./../../config/config').code
-const fs = require('fs')
-const request = require('request')
-const jwt = require('jsonwebtoken')
-const axios = require('axios')
-module.exports = function(app, client) {
+import { code } from '../../config/config'
+import * as fs from 'fs'
+import * as request from 'request'
+import * as jwt from 'jsonwebtoken'
+import axios from 'axios'
+
+export function user(app, client) {
   app.get('/users', (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
     client.query(

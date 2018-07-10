@@ -5,3 +5,5 @@ config/config.js
 config/id_rsa.pem
 config/id_rsa.pub.pem
 .vscode/
+out/
+config/config.ts

@@ -1,10 +1,12 @@
-const clientId = require('../../config/config').clientId
-const clientSecret = require('../../config/config').clientSecret
-const steamApiKey = require('../../config/config').steamApiKey
-const axios = require('axios')
-const fs = require('fs')
-const jwt = require('jsonwebtoken')
-const OpenIDStrategy = require('passport-openid').Strategy
+import { clientId, clientSecret, steamApiKey } from '../../config/config'
+import axios from 'axios'
+import * as fs from 'fs'
+import * as jwt from 'jsonwebtoken'
+import { Strategy as OpenIDStrategy } from 'passport-openid'
+import * as passport from 'passport'
+import { Application } from '../../node_modules/@types/express';
+import { Client } from '../../node_modules/@types/pg';
+
 const SteamStrategy = new OpenIDStrategy(
   {
     providerURL: 'http://steamcommunity.com/openid',
@@ -23,12 +25,12 @@ const SteamStrategy = new OpenIDStrategy(
     })
   }
 )
-const passport = require('passport')
+
 passport.use(SteamStrategy)
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function(user: any, done) {
   done(null, user.identifier)
 })
-passport.deserializeUser(function(identifier, done) {
+passport.deserializeUser(function(identifier: any, done) {
   done(null, {
     identifier: identifier,
     steamId: identifier.match(/\d+$/)[0],
@@ -36,7 +38,7 @@ passport.deserializeUser(function(identifier, done) {
   })
 })
 
-const doStuff = function(app, client) {
+export function auth (app: Application, client: Client) {
   app.use(passport.initialize())
 
   app.get('/discordauth', async function discordAuth(req, res) {
@@ -177,5 +179,3 @@ const doStuff = function(app, client) {
       })
   })
 }
-
-module.exports.doStuff = doStuff
