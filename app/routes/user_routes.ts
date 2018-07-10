@@ -6,6 +6,7 @@ import axios from 'axios'
 
 export function user(app, client) {
   app.get('/users', (req, res) => {
+    console.log('GET /users')
     res.set('Access-Control-Allow-Origin', '*')
     client.query(
       `SELECT id, name, avatarurl, datecreated, banned, datelastmessage, steamid FROM public.users`,
@@ -19,6 +20,7 @@ export function user(app, client) {
     )
   })
   app.get('/users/:id', (req, res) => {
+    console.log(`GET /users/${req.params.id}`)
     res.set('Access-Control-Allow-Origin', '*')
     client.query(
       `SELECT id, name, avatarurl, banned, datecreated, datelastmessage, steamid, level, balance FROM public.users WHERE id='${
@@ -35,6 +37,7 @@ export function user(app, client) {
   })
 
   app.post('/users&code=:code', (req, res) => {
+    console.log(`POST /users&code=${req.params.code}`)
     res.set('Access-Control-Allow-Origin', '*')
     if (req.params.code != code) {
       return res.send('Error: Invalid auth code')
@@ -64,6 +67,7 @@ export function user(app, client) {
 
   app.delete('/users/:id&code=:code', (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
+    console.log(`DELETE /users/${req.params.id}&code=${req.params.code}`)
     if (req.params.code != code) {
       return res.send('Error: Invalid auth code')
     }
@@ -91,6 +95,7 @@ export function user(app, client) {
 
   app.put('/users/:id&code=:code', (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
+    console.log(`PUT /users/${req.params.id}&code=${req.params.code}`)
     if (req.params.code != code) {
       return res.send('Error: Invalid auth code')
     }
@@ -130,6 +135,7 @@ export function user(app, client) {
 
   app.post('/steamauth/link', async function steamAuthLink(req, res) {
     res.set('Access-Control-Allow-Origin', '*')
+    console.log(`POST /steamauth/link`)
     const steamId = req.query.steamId
     const discordId = req.query.discordId
     const apiToken = req.query.jwt

@@ -4,7 +4,7 @@ import * as fs from 'fs'
 import * as jwt from 'jsonwebtoken'
 import { Strategy as OpenIDStrategy } from 'passport-openid'
 import * as passport from 'passport'
-import { Application } from '../../node_modules/@types/express';
+import { Application, Request, Response } from '../../node_modules/@types/express';
 import { Client } from '../../node_modules/@types/pg';
 
 const SteamStrategy = new OpenIDStrategy(
@@ -42,6 +42,7 @@ export function auth (app: Application, client: Client) {
   app.use(passport.initialize())
 
   app.get('/discordauth', async function discordAuth(req, res) {
+    console.log('GET /discordauth')
     res.set('Access-Control-Allow-Origin', '*')
     const redirect = req.query.redirect
     const code = req.query.code
@@ -144,6 +145,7 @@ export function auth (app: Application, client: Client) {
     req,
     res
   ) {
+    console.log('GET /steamauth/return')
     if (req.user) {
       res.redirect(`http://www.macho.ga/?steamid=${req.user.steamId}`)
     } else {
@@ -151,8 +153,9 @@ export function auth (app: Application, client: Client) {
     }
   })
 
-  app.get('/steamauth/id/:id', (req, res) => {
+  app.get('/steamauth/id/:id', (req: Request, res: Response) => {
     res.set('Access-Control-Allow-Origin', '*')
+    console.log(`GET /steamauth/id/${req.params.id}`)
     axios
       .get(
         `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${steamApiKey}&format=json&steamids=${
@@ -167,6 +170,7 @@ export function auth (app: Application, client: Client) {
 
   app.get('/steamauth/ids/:ids', (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
+    console.log(`GET /steamauth/ids/${req.params.ids}`)
     axios
       .get(
         `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${steamApiKey}&format=json&steamids=${
