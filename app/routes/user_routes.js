@@ -3,26 +3,34 @@ const fs = require('fs')
 const request = require('request')
 const jwt = require('jsonwebtoken')
 const axios = require('axios')
-module.exports = function (app, client) {
+module.exports = function(app, client) {
   app.get('/users', (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
-    client.query(`SELECT id, name, avatarurl, datecreated, banned, datelastmessage, steamid FROM public.users`, (err, queryRes) => {
-      if (err) {
-        res.send('Error')
-      } else {
-        res.send(queryRes.rows)
+    client.query(
+      `SELECT id, name, avatarurl, datecreated, banned, datelastmessage, steamid FROM public.users`,
+      (err, queryRes) => {
+        if (err) {
+          res.send('Error')
+        } else {
+          res.send(queryRes.rows)
+        }
       }
-    })
+    )
   })
   app.get('/users/:id', (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
-    client.query(`SELECT id, name, avatarurl, banned, datecreated, datelastmessage, steamid, level, balance FROM public.users WHERE id='${req.params.id}'`, (err, queryRes) => {
-      if (err) {
-        res.send('Error')
-      } else {
-        res.send(queryRes.rows[0])
+    client.query(
+      `SELECT id, name, avatarurl, banned, datecreated, datelastmessage, steamid, level, balance FROM public.users WHERE id='${
+        req.params.id
+      }'`,
+      (err, queryRes) => {
+        if (err) {
+          res.send('Error')
+        } else {
+          res.send(queryRes.rows[0])
+        }
       }
-    })
+    )
   })
 
   app.post('/users&code=:code', (req, res) => {
@@ -30,8 +38,19 @@ module.exports = function (app, client) {
     if (req.params.code != code) {
       return res.send('Error: Invalid auth code')
     }
-    const text = 'INSERT INTO users(id, name, avatarUrl, banned, dateCreated, dateLastMessage, steamId, level, balance) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *'
-    const values = [req.body.id, req.body.name, req.body.avatarurl, req.body.banned, req.body.datecreated, req.body.datelastmessage, req.body.steamid, req.body.level, req.body.balance]
+    const text =
+      'INSERT INTO users(id, name, avatarUrl, banned, dateCreated, dateLastMessage, steamId, level, balance) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *'
+    const values = [
+      req.body.id,
+      req.body.name,
+      req.body.avatarurl,
+      req.body.banned,
+      req.body.datecreated,
+      req.body.datelastmessage,
+      req.body.steamid,
+      req.body.level,
+      req.body.balance
+    ]
     client.query(text, values, (err, queryRes) => {
       if (err) {
         res.send('Error')
@@ -49,13 +68,16 @@ module.exports = function (app, client) {
     }
     const text = `DELETE FROM users WHERE id='${req.params.id}'`
     let deleted
-    client.query(`SELECT * FROM public.users WHERE id='${req.params.id}'`, (err, queryRes) => {
-      if (err) {
-        res.send('Error')
-      } else {
-        deleted = queryRes.rows[0]
+    client.query(
+      `SELECT * FROM public.users WHERE id='${req.params.id}'`,
+      (err, queryRes) => {
+        if (err) {
+          res.send('Error')
+        } else {
+          deleted = queryRes.rows[0]
+        }
       }
-    })
+    )
     client.query(text, (err, queryRes) => {
       if (err) {
         res.send('Error')
@@ -71,16 +93,30 @@ module.exports = function (app, client) {
     if (req.params.code != code) {
       return res.send('Error: Invalid auth code')
     }
-    const text = `UPDATE public.users SET id=$1, name=$2, avatarUrl=$3, banned=$4, dateLastMessage=$5, steamId=$6, level=$7, balance=$8 WHERE id='${req.params.id}'`
-    const values = [req.body.id, req.body.name, req.body.avatarurl, req.body.banned, req.body.datelastmessage, req.body.steamid, req.body.level, req.body.balance]
+    const text = `UPDATE public.users SET id=$1, name=$2, avatarUrl=$3, banned=$4, dateLastMessage=$5, steamId=$6, level=$7, balance=$8 WHERE id='${
+      req.params.id
+    }'`
+    const values = [
+      req.body.id,
+      req.body.name,
+      req.body.avatarurl,
+      req.body.banned,
+      req.body.datelastmessage,
+      req.body.steamid,
+      req.body.level,
+      req.body.balance
+    ]
     let changed
-    client.query(`SELECT * FROM public.users WHERE id='${req.params.id}'`, (err, queryRes) => {
-      if (err) {
-        res.send('Error')
-      } else {
-        changed = queryRes.rows[0]
+    client.query(
+      `SELECT * FROM public.users WHERE id='${req.params.id}'`,
+      (err, queryRes) => {
+        if (err) {
+          res.send('Error')
+        } else {
+          changed = queryRes.rows[0]
+        }
       }
-    })
+    )
     client.query(text, values, (err, queryRes) => {
       if (err) {
         res.send('Error')
@@ -101,19 +137,33 @@ module.exports = function (app, client) {
     try {
       decodedApiToken = jwt.verify(apiToken, publicRSA)
     } catch (err) {
-      console.log("Invalid JWT.")
+      console.log('Invalid JWT.')
       res.send('Invalid JWT.')
       return false
     }
     if (decodedApiToken.userId != discordId) {
-      console.log(`Tried to link to another Discord account.\nDifference: ${decodedApiToken.userId} (length of ${decodedApiToken.userId.length}) != ${discordId} (length of ${discordId.length})`)
+      console.log(
+        `Tried to link to another Discord account.\nDifference: ${
+          decodedApiToken.userId
+        } (length of ${
+          decodedApiToken.userId.length
+        }) != ${discordId} (length of ${discordId.length})`
+      )
       res.send('Invalid JWT.')
       return false
     }
     let apiUser = await axios.get(`http://localhost:8000/users/${discordId}`)
-    if (apiUser.data === '' || apiUser.data === 'Error' || apiUser.data === '{}') { return console.log('User doesn\'t exist.') }
+    if (
+      apiUser.data === '' ||
+      apiUser.data === 'Error' ||
+      apiUser.data === '{}'
+    ) {
+      return console.log("User doesn't exist.")
+    }
     let user = apiUser.data
-    const foundUser = await client.query(`SELECT * FROM public.users WHERE id='${discordId}'`)
+    const foundUser = await client.query(
+      `SELECT * FROM public.users WHERE id='${discordId}'`
+    )
     let accessToken = foundUser.rows[0].accesstoken
     if (decodedApiToken.accessToken != accessToken) {
       console.log('Access Token was incorrect')
@@ -123,7 +173,10 @@ module.exports = function (app, client) {
     let users = await axios.get('http://localhost:8000/users')
     users = users.data
     for (let userLoc in users) {
-      if (users[userLoc].steamid == steamId && users[userLoc].steamid != 'null') {
+      if (
+        users[userLoc].steamid == steamId &&
+        users[userLoc].steamid != 'null'
+      ) {
         console.log('Steam ID already in use.')
         res.send('Steam ID already in use.')
         return false
