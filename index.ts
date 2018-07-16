@@ -9,6 +9,7 @@ const port = 8000
 const client = new Client(db)
 
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 client.connect()
 
 route(app, client)
