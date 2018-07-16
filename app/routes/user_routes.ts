@@ -95,7 +95,7 @@ export function user(app, client) {
 
   app.put('/users/:id&code=:code', (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
-    console.log(`PUT /users/${req.params.id}&code=${req.params.code}: \n${req.body}`)
+    console.log(`PUT /users/${req.params.id}&code=${req.params.code}: \n${JSON.stringify(req.body, null, 2)}`)
     if (req.params.code != code) {
       return res.send('Error: Invalid auth code')
     }
