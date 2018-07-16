@@ -24,7 +24,7 @@ export function user(app, client) {
     res.set('Access-Control-Allow-Origin', '*')
     client.query(
       `SELECT id, name, avatarurl, banned, datecreated, datelastmessage, steamid, level, balance FROM public.users WHERE id='${
-        req.params.id
+      req.params.id
       }'`,
       (err, queryRes) => {
         if (err) {
@@ -95,13 +95,13 @@ export function user(app, client) {
 
   app.put('/users/:id&code=:code', (req, res) => {
     res.set('Access-Control-Allow-Origin', '*')
-    console.log(`PUT /users/${req.params.id}&code=${req.params.code}`)
+    console.log(`PUT /users/${req.params.id}&code=${req.params.code}: \n${req.body}`)
     if (req.params.code != code) {
       return res.send('Error: Invalid auth code')
     }
     const text = `UPDATE public.users SET id=$1, name=$2, avatarUrl=$3, banned=$4, dateLastMessage=$5, steamId=$6, level=$7, balance=$8 WHERE id='${
       req.params.id
-    }'`
+      }'`
     const values = [
       req.body.id,
       req.body.name,
@@ -151,9 +151,9 @@ export function user(app, client) {
     if (decodedApiToken.userId != discordId) {
       console.log(
         `Tried to link to another Discord account.\nDifference: ${
-          decodedApiToken.userId
+        decodedApiToken.userId
         } (length of ${
-          decodedApiToken.userId.length
+        decodedApiToken.userId.length
         }) != ${discordId} (length of ${discordId.length})`
       )
       res.send('Invalid JWT.')
