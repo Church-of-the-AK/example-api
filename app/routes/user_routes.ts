@@ -23,7 +23,7 @@ export function user(app, client) {
     console.log(`GET /users/${req.params.id}`)
     res.set('Access-Control-Allow-Origin', '*')
     client.query(
-      `SELECT id, name, avatarurl, banned, datecreated, datelastmessage, steamid, level, balance FROM public.users WHERE id='${
+      `SELECT id, name, avatarurl, banned, datecreated, datelastmessage, steamid, level, balance, admin FROM public.users WHERE id='${
       req.params.id
       }'`,
       (err, queryRes) => {
@@ -43,7 +43,7 @@ export function user(app, client) {
       return res.send('Error: Invalid auth code')
     }
     const text =
-      'INSERT INTO users(id, name, avatarUrl, banned, dateCreated, dateLastMessage, steamId, level, balance) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *'
+      'INSERT INTO users(id, name, avatarUrl, banned, dateCreated, dateLastMessage, steamId, level, balance, admin) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *'
     const values = [
       req.body.id,
       req.body.name,
@@ -53,7 +53,8 @@ export function user(app, client) {
       req.body.datelastmessage,
       req.body.steamid,
       req.body.level,
-      req.body.balance
+      req.body.balance,
+      req.body.admin
     ]
     client.query(text, values, (err, queryRes) => {
       if (err) {
@@ -99,7 +100,7 @@ export function user(app, client) {
     if (req.params.code != code) {
       return res.send('Error: Invalid auth code')
     }
-    const text = `UPDATE public.users SET id=$1, name=$2, avatarUrl=$3, banned=$4, dateLastMessage=$5, steamId=$6, level=$7, balance=$8 WHERE id='${
+    const text = `UPDATE public.users SET id=$1, name=$2, avatarUrl=$3, banned=$4, dateLastMessage=$5, steamId=$6, level=$7, balance=$8, admin=$9 WHERE id='${
       req.params.id
       }'`
     const values = [
@@ -110,7 +111,8 @@ export function user(app, client) {
       req.body.datelastmessage,
       req.body.steamid,
       req.body.level,
-      req.body.balance
+      req.body.balance,
+      req.body.admin
     ]
     let changed
     client.query(
