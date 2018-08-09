@@ -12,8 +12,10 @@ const port = 8000
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(morgan(':method :url :status :res[content] - :response-time ms'))
-
-app.set('Access-Control-Allow-Origin', '*')
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  next()
+})
 
 connect().then(() => {
   route(app)
