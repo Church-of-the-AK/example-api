@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "0.2.0-dev",
+  "version": "0.0.2",
   "description": "Macho's API.",
   "main": "out/index.js",
   "scripts": {
