@@ -1,46 +1,32 @@
 {
-  "name": "machoapi",
-  "version": "0.0.1",
-  "description": "An API for my bot, Macho.",
-  "main": "index.js",
+  "name": "api",
+  "version": "0.2.0-dev",
+  "description": "Macho's API.",
+  "main": "out/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && nodemon out/index.js"
+    "test": "tsc && node out/index"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jasonhaxstuff/machoapi.git"
-  },
-  "keywords": [
-    "macho",
-    "discord",
-    "api"
-  ],
   "author": "jasonhaxstuff",
   "license": "GPL-3.0",
-  "bugs": {
-    "url": "https://github.com/jasonhaxstuff/machoapi/issues"
-  },
-  "homepage": "https://github.com/jasonhaxstuff/machoapi#readme",
   "dependencies": {
-    "@types/express": "^4.16.0",
-    "@types/jsonwebtoken": "^7.2.8",
-    "@types/node": "^10.5.2",
-    "@types/passport": "^0.4.5",
-    "@types/pg": "^7.4.10",
-    "@types/request": "^2.47.1",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
+    "machobot-database": "0.0.12",
+    "morgan": "^1.9.0",
     "passport": "^0.4.0",
     "passport-openid": "^0.4.0",
     "pg": "^7.4.3",
-    "request": "^2.87.0",
-    "tsc": "^1.20150623.0",
-    "typescript": "^2.9.2"
+    "typeorm": "^0.2.7"
   },
   "devDependencies": {
-    "nodemon": "^1.17.5"
+    "@types/jsonwebtoken": "^7.2.8",
+    "@types/passport": "^0.4.6",
+    "@types/express": "^4.16.0",
+    "@types/express-serve-static-core": "^4.16.0",
+    "tslint": "^5.11.0",
+    "tslint-config-standard": "^7.1.0",
+    "typescript": "^3.0.1"
   }
 }

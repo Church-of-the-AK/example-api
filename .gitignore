@@ -1,9 +1,5 @@
-node_modules/
-config/db.js
-config/code.js
-config/config.js
-config/id_rsa.pem
-config/id_rsa.pub.pem
-.vscode/
-out/
-config/config.ts
+node_modules
+src/config/config.ts
+src/config/id_rsa.*
+out
+yarn.lock
