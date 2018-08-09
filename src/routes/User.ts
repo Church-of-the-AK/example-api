@@ -87,11 +87,31 @@ export async function UserRoutes (app: Application) {
       return res.send({ code: 401, message: 'invalid code' })
     }
 
-    const response = await userRepository.update(req.params.id, user).catch(error => {
-      return error
+    let responses: any[] = []
+
+    await userRepository.update(req.params.id, user).catch(error => {
+      responses.push(error)
     })
 
-    res.send(response)
+    if (user.balance) {
+      responses.push(await userBalanceRepository.update(req.params.id, user.balance).catch(error => {
+        return error
+      }))
+    }
+
+    if (user.level) {
+      responses.push(await userLevelRepository.update(req.params.id, user.level).catch(error => {
+        return error
+      }))
+    }
+
+    if (user.links) {
+      responses.push(await userLinksRepository.update(req.params.id, user.links).catch(error => {
+        return error
+      }))
+    }
+
+    res.send(responses)
   })
 
   app.delete('/users/:id&code=:code', async (req, res) => {
