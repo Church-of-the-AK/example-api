@@ -71,6 +71,7 @@ export async function UserRoutes (app: Application) {
     user.links.steamId = ''
 
     const response = await userRepository.save(user).catch(error => {
+      console.log(error)
       return error
     })
 
@@ -90,23 +91,27 @@ export async function UserRoutes (app: Application) {
     let responses: any[] = []
 
     await userRepository.update(req.params.id, user).catch(error => {
+      console.log(error)
       responses.push(error)
     })
 
     if (user.balance) {
       responses.push(await userBalanceRepository.update(req.params.id, user.balance).catch(error => {
+        console.log(error)
         return error
       }))
     }
 
     if (user.level) {
       responses.push(await userLevelRepository.update(req.params.id, user.level).catch(error => {
+        console.log(error)
         return error
       }))
     }
 
     if (user.links) {
       responses.push(await userLinksRepository.update(req.params.id, user.links).catch(error => {
+        console.log(error)
         return error
       }))
     }
@@ -125,6 +130,7 @@ export async function UserRoutes (app: Application) {
     let responses: any[] = []
 
     const user = await userRepository.findOne(req.params.id, { relations: [ 'balance', 'level', 'links' ] }).catch(error => {
+      console.log(error)
       responses.push(error)
     })
 
@@ -133,16 +139,20 @@ export async function UserRoutes (app: Application) {
     }
 
     await userRepository.delete({ id: user.id }).catch(error => {
+      console.log(error)
       responses.push(error)
     })
 
     await userBalanceRepository.delete({ id: user.balance.id }).catch(error => {
+      console.log(error)
       responses.push(error)
     })
     await userLevelRepository.delete({ id: user.level.id }).catch(error => {
+      console.log(error)
       responses.push(error)
     })
     await userLinksRepository.delete({ id: user.links.id }).catch(error => {
+      console.log(error)
       responses.push(error)
     })
 
@@ -163,6 +173,7 @@ export async function UserRoutes (app: Application) {
     balance.id = old.id
 
     const response = await userBalanceRepository.save(balance).catch(error => {
+      console.log(error)
       return error
     })
 
@@ -183,6 +194,7 @@ export async function UserRoutes (app: Application) {
     level.id = old.id
 
     const response = await userLevelRepository.save(level).catch(error => {
+      console.log(error)
       return error
     })
 
@@ -203,6 +215,7 @@ export async function UserRoutes (app: Application) {
     links.id = old.id
 
     const response = await userLinksRepository.save(links).catch(error => {
+      console.log(error)
       return error
     })
 
