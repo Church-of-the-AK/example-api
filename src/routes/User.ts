@@ -271,4 +271,54 @@ export async function UserRoutes (app: Application) {
     console.log('Successful')
     return res.send('Successful')
   })
+
+  app.get('/githubauth/link', async (req, res) => {
+    const githubId = req.query.github
+    const discordId = req.query.discord
+    const apiToken = req.query.jwt
+    const publicRSA = await fs.readFileSync('./src/config/id_rsa.pub.pem')
+    let decodedApiToken
+
+    try {
+      decodedApiToken = jwt.verify(apiToken, publicRSA)
+    } catch (err) {
+      console.log('Invalid JWT.')
+      return res.send('Invalid JWT.')
+    }
+
+    if (decodedApiToken.userId !== discordId) {
+      console.log(
+        `Tried to link to another Discord account.\nDifference: ${decodedApiToken.userId} (length of ${
+          decodedApiToken.userId.length}) != ${discordId} (length of ${discordId.length})`
+      )
+      return res.send('Invalid JWT.')
+    }
+
+    const user = await userRepository.findOne(discordId, { relations: [ 'links' ], select: [ 'accessToken', 'links' ] })
+
+    if (!user) {
+      console.log('User doesn\'t exist.')
+      return res.send('User doesn\'t exist.')
+    }
+
+    const accessToken = user.accessToken
+
+    if (decodedApiToken.accessToken !== accessToken) {
+      console.log(`Access Token was incorrect\n${decodedApiToken.accessToken} !== ${accessToken}`)
+      return res.send('Invalid JWT.')
+    }
+
+    const same = await userRepository.findOne({ where: { links: { githubId } } })
+
+    if (same) {
+      console.log('Account already linked.')
+      return res.send('Account is already linked.')
+    }
+
+    user.links.githubId = githubId
+    await userLinksRepository.save(user.links)
+
+    console.log('Successful')
+    return res.send('Successful')
+  })
 }

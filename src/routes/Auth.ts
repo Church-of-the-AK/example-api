@@ -1,5 +1,5 @@
 import { Application } from 'express'
-import { clientId, clientSecret, steamApiKey } from '../config/config'
+import { discord, steamApiKey, github } from '../config/config'
 import axios from 'axios'
 import * as fs from 'fs'
 import * as jwt from 'jsonwebtoken'
@@ -53,7 +53,7 @@ export function AuthRoutes (app: Application) {
       return res.send('Improper format.')
     }
 
-    const creds = Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
+    const creds = Buffer.from(`${discord.clientId}:${discord.clientSecret}`).toString('base64')
     const { data: accessToken } = await axios.post(`https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${code}&redirect_uri=${redirect}`, null, {
       headers: {
         Authorization: `Basic ${creds}`
@@ -126,18 +126,33 @@ export function AuthRoutes (app: Application) {
   })
 
   app.get('/steamauth/id/:id', async (req, res) => {
-    const { data: { response: steamResponse } } = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${
+    const { data: { response: { players: steamUser } } } = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${
       steamApiKey}&format=json&steamids=${req.params.id}`)
-    const steamUser = steamResponse.players[0]
 
-    res.send(steamUser)
+    res.send(steamUser[0])
   })
 
   app.get('/steamauth/ids/:ids', async (req, res) => {
-    const { data: { response: steamResponse } } = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${
+    const { data: { response: { players: steamUsers } } } = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${
       steamApiKey}&format=json&steamids=${req.params.ids}`)
-    const steamUser = steamResponse.players
 
-    res.send(steamUser)
+    res.send(steamUsers)
+  })
+
+  app.get('/githubauth/access_token', async (req, res) => {
+    const code = req.query.code
+    const post = {
+      client_id: github.clientId,
+      client_secret: github.clientSecret,
+      redirect_uri: github.redirect,
+      code
+    }
+    const { data: response } = await axios.post('https://github.com/login/oauth/access_token', post, { headers: { Accept: 'application/json' } })
+
+    if (!response.access_token) {
+      return res.send('Error')
+    }
+
+    res.redirect(`http://www.macho.ga/?githubId=${response.access_token}`)
   })
 }

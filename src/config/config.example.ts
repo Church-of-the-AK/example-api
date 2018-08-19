@@ -9,6 +9,15 @@ export let db = {
   port: 5432
 }
 
-export let clientId = ''
-export let clientSecret = ''
+export let discord = {
+  clientSecret: '',
+  clientId: ''
+}
+
+export let github = {
+  clientId: '',
+  clientSecret: '',
+  redirect: ''
+}
+
 export let steamApiKey = ''

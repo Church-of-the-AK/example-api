@@ -13,7 +13,7 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
-    "machobot-database": "0.0.12",
+    "machobot-database": "^0.0.16",
     "morgan": "^1.9.0",
     "passport": "^0.4.0",
     "passport-openid": "^0.4.0",
@@ -21,10 +21,10 @@
     "typeorm": "^0.2.7"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "^7.2.8",
-    "@types/passport": "^0.4.6",
     "@types/express": "^4.16.0",
     "@types/express-serve-static-core": "^4.16.0",
+    "@types/jsonwebtoken": "^7.2.8",
+    "@types/passport": "^0.4.6",
     "tslint": "^5.11.0",
     "tslint-config-standard": "^7.1.0",
     "typescript": "^3.0.1"
