@@ -81,7 +81,7 @@ export async function UserRoutes (app: Application) {
 
   app.put('/users/:id&code=:code', async (req, res) => {
     const code = req.params.code
-    const user = req.body
+    const user: User = req.body
 
     if (code !== config.code) {
       res.statusCode = 401
@@ -161,7 +161,7 @@ export async function UserRoutes (app: Application) {
 
   app.put('/users/:id/balance&code=:code', async (req, res) => {
     const code = req.params.code
-    const balance = req.body
+    const balance: UserBalance = req.body
 
     if (code !== config.code) {
       res.statusCode = 401
@@ -182,7 +182,7 @@ export async function UserRoutes (app: Application) {
 
   app.put('/users/:id/level&code=:code', async (req, res) => {
     const code = req.params.code
-    const level = req.body
+    const level: UserLevel = req.body
 
     if (code !== config.code) {
       res.statusCode = 401
@@ -203,7 +203,7 @@ export async function UserRoutes (app: Application) {
 
   app.put('/users/:id/links&code=:code', async (req, res) => {
     const code = req.params.code
-    const links = req.body
+    const links: UserLinks = req.body
 
     if (code !== config.code) {
       res.statusCode = 401
@@ -223,9 +223,9 @@ export async function UserRoutes (app: Application) {
   })
 
   app.post('/steamauth/link', async (req, res) => {
-    const steamId = req.query.steamId
-    const discordId = req.query.discordId
-    const apiToken = req.query.jwt
+    const steamId: string = req.query.steamId
+    const discordId: string = req.query.discordId
+    const apiToken: string = req.query.jwt
     const publicRSA = await fs.readFileSync('./src/config/id_rsa.pub.pem')
     let decodedApiToken
 
