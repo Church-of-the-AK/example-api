@@ -150,6 +150,7 @@ export function AuthRoutes (app: Application) {
     const { data: response } = await axios.post('https://github.com/login/oauth/access_token', post, { headers: { Accept: 'application/json' } })
 
     if (!response.access_token) {
+      console.log(response)
       return res.send('Error')
     }
 
