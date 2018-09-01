@@ -3,7 +3,7 @@ import { getRepository } from 'typeorm'
 import { Guild, GuildSettings } from 'machobot-database'
 import * as config from '../config/config'
 
-export async function UserRoutes (app: Application) {
+export async function GuildRoutes (app: Application) {
   const guildRepository = getRepository(Guild)
   const guildSettingsRepository = getRepository(GuildSettings)
 
