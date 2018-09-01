@@ -88,35 +88,12 @@ export async function UserRoutes (app: Application) {
       return res.send({ code: 401, message: 'invalid code' })
     }
 
-    let responses: any[] = []
-
-    await userRepository.update(req.params.id, user).catch(error => {
+    const response = await userRepository.save(user).catch(error => {
       console.log(error)
-      responses.push(error)
+      return error
     })
 
-    if (user.balance) {
-      responses.push(await userBalanceRepository.update(req.params.id, user.balance).catch(error => {
-        console.log(error)
-        return error
-      }))
-    }
-
-    if (user.level) {
-      responses.push(await userLevelRepository.update(req.params.id, user.level).catch(error => {
-        console.log(error)
-        return error
-      }))
-    }
-
-    if (user.links) {
-      responses.push(await userLinksRepository.update(req.params.id, user.links).catch(error => {
-        console.log(error)
-        return error
-      }))
-    }
-
-    res.send(responses)
+    res.send(response)
   })
 
   app.delete('/users/:id&code=:code', async (req, res) => {
@@ -147,10 +124,12 @@ export async function UserRoutes (app: Application) {
       console.log(error)
       responses.push(error)
     })
+
     await userLevelRepository.delete({ id: user.level.id }).catch(error => {
       console.log(error)
       responses.push(error)
     })
+
     await userLinksRepository.delete({ id: user.links.id }).catch(error => {
       console.log(error)
       responses.push(error)
@@ -167,10 +146,6 @@ export async function UserRoutes (app: Application) {
       res.statusCode = 401
       return res.send({ code: 401, message: 'invalid code' })
     }
-
-    const old = (await userRepository.findOne(req.params.id, { relations: [ 'balance' ] })).balance
-    balance.user = old.user
-    balance.id = old.id
 
     const response = await userBalanceRepository.save(balance).catch(error => {
       console.log(error)
@@ -189,10 +164,6 @@ export async function UserRoutes (app: Application) {
       return res.send({ code: 401, message: 'invalid code' })
     }
 
-    const old = (await userRepository.findOne(req.params.id, { relations: [ 'level' ] })).level
-    level.user = old.user
-    level.id = old.id
-
     const response = await userLevelRepository.save(level).catch(error => {
       console.log(error)
       return error
@@ -209,10 +180,6 @@ export async function UserRoutes (app: Application) {
       res.statusCode = 401
       return res.send({ code: 401, message: 'invalid code' })
     }
-
-    const old = (await userRepository.findOne(req.params.id, { relations: [ 'links' ] })).links
-    links.user = old.user
-    links.id = old.id
 
     const response = await userLinksRepository.save(links).catch(error => {
       console.log(error)
