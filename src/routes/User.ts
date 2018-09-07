@@ -240,7 +240,7 @@ export async function UserRoutes (app: Application) {
   })
 
   app.post('/githubauth/link', async (req, res) => {
-    const githubId = req.query.github
+    const githubId = req.query.githubId
     const discordId = req.query.discordId
     const apiToken = req.query.jwt
     const publicRSA = await fs.readFileSync('./src/config/id_rsa.pub.pem')
