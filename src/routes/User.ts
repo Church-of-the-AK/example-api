@@ -255,8 +255,7 @@ export async function UserRoutes (app: Application) {
 
     if (decodedApiToken.userId !== discordId) {
       console.log(
-        `Tried to link to another Discord account.\nDifference: ${decodedApiToken.userId} (length of ${
-          decodedApiToken.userId.length}) != ${discordId} (length of ${discordId.length})`
+        `Tried to link to another Discord account.\nDifference: ${decodedApiToken.userId} != ${discordId}`
       )
       return res.send('Invalid JWT.')
     }
