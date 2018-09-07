@@ -239,7 +239,7 @@ export async function UserRoutes (app: Application) {
     return res.send('Successful')
   })
 
-  app.get('/githubauth/link', async (req, res) => {
+  app.post('/githubauth/link', async (req, res) => {
     const githubId = req.query.github
     const discordId = req.query.discord
     const apiToken = req.query.jwt
