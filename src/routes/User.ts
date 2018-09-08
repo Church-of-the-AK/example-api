@@ -190,7 +190,7 @@ export async function UserRoutes (app: Application) {
   })
 
   app.post('/steamauth/link', async (req, res) => {
-    const steamId: string = req.query.steamId
+    const steamId: string = req.query.steamId === '' ? null : req.query.steamId
     const discordId: string = req.query.discordId
     const apiToken: string = req.query.jwt
     const publicRSA = await fs.readFileSync('./src/config/id_rsa.pub.pem')
@@ -240,9 +240,9 @@ export async function UserRoutes (app: Application) {
   })
 
   app.post('/githubauth/link', async (req, res) => {
-    const githubId = req.query.githubId
-    const discordId = req.query.discordId
-    const apiToken = req.query.jwt
+    const githubId: string = req.query.githubId === '' ? null : req.query.githubId
+    const discordId: string = req.query.discordId
+    const apiToken: string = req.query.jwt
     const publicRSA = await fs.readFileSync('./src/config/id_rsa.pub.pem')
     let decodedApiToken
 
