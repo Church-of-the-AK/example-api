@@ -282,7 +282,7 @@ export async function UserRoutes (app: Application) {
     }
 
     user.links.githubId = githubId
-    await userRepository.save(user)
+    await userLinksRepository.save(user.links)
 
     console.log('Successful')
     return res.send('Successful')
