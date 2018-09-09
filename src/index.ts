@@ -1,7 +1,7 @@
 import * as express from 'express'
 import * as bodyParser from 'body-parser'
 import * as morgan from 'morgan'
-import { User, UserBalance, UserLevel, UserLinks, Guild, GuildSettings } from 'machobot-database'
+import { User, UserBalance, UserLevel, UserLinks, UserGithubLinks, UserSteamLinks, Guild, GuildSettings } from 'machobot-database'
 import { db } from './config/config'
 import { createConnection } from 'typeorm'
 import { route } from './routes'
@@ -33,7 +33,7 @@ async function connect () {
     username: db.user,
     password: db.password,
     database: db.database,
-    entities: [ User, UserBalance, UserLevel, UserLinks, Guild, GuildSettings ]
+    entities: [ User, UserBalance, UserLevel, UserLinks, UserGithubLinks, UserSteamLinks, Guild, GuildSettings ]
   })
 
   await connection.synchronize()
