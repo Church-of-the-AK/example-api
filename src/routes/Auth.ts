@@ -77,7 +77,6 @@ export function AuthRoutes (app: Application) {
       user.level = new UserLevel()
       user.balance = new UserBalance()
       user.links = new UserLinks()
-      user.links.steamId = ''
 
       await userRepository.save(user)
 
