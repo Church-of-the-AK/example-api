@@ -10,10 +10,10 @@ import { User, UserLevel, UserBalance, UserLinks } from 'machobot-database'
 
 const SteamStrategy = new Strategy(
   {
-    providerURL: 'http://steamcommunity.com/openid',
+    providerURL: 'https://steamcommunity.com/openid',
     stateless: true,
-    returnURL: 'http://macho.ninja:8000/steamauth/return',
-    realm: 'http://macho.ninja:8000/'
+    returnURL: 'https://macho.ninja:8000/steamauth/return',
+    realm: 'https://macho.ninja:8000/'
   },
   (identifier, done) => {
     process.nextTick(function () {
@@ -118,7 +118,7 @@ export function AuthRoutes (app: Application) {
 
   app.get('/steamauth/return', passport.authenticate('openid'), async (req, res) => {
     if (req.user) {
-      return res.redirect(`http://www.macho.ninja/?steamid=${req.user.steamId}`)
+      return res.redirect(`https://www.macho.ninja/?steamid=${req.user.steamId}`)
     }
 
     res.send('Failed')
@@ -153,6 +153,6 @@ export function AuthRoutes (app: Application) {
       return res.send('Error')
     }
 
-    res.redirect(`http://www.macho.ninja/?githubId=${response.access_token}`)
+    res.redirect(`https://www.macho.ninja/?githubId=${response.access_token}`)
   })
 }
