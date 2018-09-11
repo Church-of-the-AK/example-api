@@ -22,10 +22,12 @@ app.use(function (req, res, next) {
 connect().then(() => {
   route(app)
 
+  app.listen(port)
+
   https.createServer({
     key: readFileSync('/etc/letsencrypt/live/www.macho.ninja/privkey.pem'),
     cert: readFileSync('/etc/letsencrypt/live/www.macho.ninja/cert.pem')
-  }, app).listen(port, function () {
+  }, app).listen(8080, function () {
     console.log(`Listening on port ${port}`)
   })
 })
