@@ -9,7 +9,7 @@ import { createConnection } from 'typeorm'
 import { route } from './routes'
 
 const app = express()
-const port = 443
+const port = 80
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
