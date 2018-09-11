@@ -13,19 +13,19 @@ export async function UserRoutes (app: Application) {
   const userSteamLinksRepository = getRepository(UserSteamLinks)
   const userGithubLinksRepository = getRepository(UserGithubLinks)
 
-  app.get('/users', async (req, res) => {
+  app.get('/api/users', async (req, res) => {
     const users = await userRepository.find()
 
     res.send(users)
   })
 
-  app.get('/users/:id', async (req, res) => {
+  app.get('/api/users/:id', async (req, res) => {
     const user = await userRepository.findOne(req.params.id, { relations: [ 'balance', 'level' ] })
 
     res.send(user)
   })
 
-  app.get('/users/:id/level', async (req, res) => {
+  app.get('/api/users/:id/level', async (req, res) => {
     const user = await userRepository.findOne(req.params.id, { relations: [ 'level' ] })
 
     if (!user) {
@@ -35,7 +35,7 @@ export async function UserRoutes (app: Application) {
     res.send(user.level)
   })
 
-  app.get('/users/:id/balance', async (req, res) => {
+  app.get('/api/users/:id/balance', async (req, res) => {
     const user = await userRepository.findOne(req.params.id, { relations: [ 'balance' ] })
 
     if (!user) {
@@ -45,7 +45,7 @@ export async function UserRoutes (app: Application) {
     res.send(user.balance)
   })
 
-  app.get('/users/:id/links', async (req, res) => {
+  app.get('/api/users/:id/links', async (req, res) => {
     const user = await userRepository.findOne(req.params.id, { relations: [ 'links' ] })
 
     if (!user) {
@@ -55,7 +55,7 @@ export async function UserRoutes (app: Application) {
     res.send(user.links)
   })
 
-  app.post('/users&code=:code', async (req, res) => {
+  app.post('/api/users&code=:code', async (req, res) => {
     const code = req.params.code
     const userReq = req.body
 
@@ -79,7 +79,7 @@ export async function UserRoutes (app: Application) {
     res.send(response)
   })
 
-  app.put('/users/:id&code=:code', async (req, res) => {
+  app.put('/api/users/:id&code=:code', async (req, res) => {
     const code = req.params.code
     const user: User = req.body
 
@@ -96,7 +96,7 @@ export async function UserRoutes (app: Application) {
     res.send(response)
   })
 
-  app.delete('/users/:id&code=:code', async (req, res) => {
+  app.delete('/api/users/:id&code=:code', async (req, res) => {
     const code = req.params.code
 
     if (code !== config.code) {
@@ -138,7 +138,7 @@ export async function UserRoutes (app: Application) {
     res.send(responses)
   })
 
-  app.put('/users/:id/balance&code=:code', async (req, res) => {
+  app.put('/api/users/:id/balance&code=:code', async (req, res) => {
     const code = req.params.code
     const balance: UserBalance = req.body
 
@@ -155,7 +155,7 @@ export async function UserRoutes (app: Application) {
     res.send(response)
   })
 
-  app.put('/users/:id/level&code=:code', async (req, res) => {
+  app.put('/api/users/:id/level&code=:code', async (req, res) => {
     const code = req.params.code
     const level: UserLevel = req.body
 
@@ -172,7 +172,7 @@ export async function UserRoutes (app: Application) {
     res.send(response)
   })
 
-  app.put('/users/:id/links&code=:code', async (req, res) => {
+  app.put('/api/users/:id/links&code=:code', async (req, res) => {
     const code = req.params.code
     const links: UserLinks = req.body
 
@@ -189,7 +189,7 @@ export async function UserRoutes (app: Application) {
     res.send(response)
   })
 
-  app.post('/steamauth/link', async (req, res) => {
+  app.post('/api/steamauth/link', async (req, res) => {
     const steamId: string = req.query.steamId === '' ? null : req.query.steamId
     const discordId: string = req.query.discordId
     const apiToken: string = req.query.jwt
@@ -239,7 +239,7 @@ export async function UserRoutes (app: Application) {
     return res.send('Successful')
   })
 
-  app.post('/githubauth/link', async (req, res) => {
+  app.post('/api/githubauth/link', async (req, res) => {
     const githubId: string = req.query.githubId === '' ? null : req.query.githubId
     const discordId: string = req.query.discordId
     const apiToken: string = req.query.jwt

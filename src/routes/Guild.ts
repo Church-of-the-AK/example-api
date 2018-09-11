@@ -7,19 +7,19 @@ export async function GuildRoutes (app: Application) {
   const guildRepository = getRepository(Guild)
   const guildSettingsRepository = getRepository(GuildSettings)
 
-  app.get('/guilds', async (req, res) => {
+  app.get('/api/guilds', async (req, res) => {
     const guilds = await guildRepository.find()
 
     res.send(guilds)
   })
 
-  app.get('/guilds/:id', async (req, res) => {
+  app.get('/api/guilds/:id', async (req, res) => {
     const guild = await guildRepository.findOne(req.params.id, { relations: [ 'settings' ] })
 
     res.send(guild)
   })
 
-  app.get('/guilds/:id/settings', async (req, res) => {
+  app.get('/api/api/guilds/:id/settings', async (req, res) => {
     const guild = await guildRepository.findOne(req.params.id, { relations: [ 'settings' ] })
 
     if (!guild) {
@@ -29,7 +29,7 @@ export async function GuildRoutes (app: Application) {
     res.send(guild.settings)
   })
 
-  app.post('/guilds&code=:code', async (req, res) => {
+  app.post('/api/guilds&code=:code', async (req, res) => {
     const code = req.params.code
     const guildReq = req.body
 
@@ -50,7 +50,7 @@ export async function GuildRoutes (app: Application) {
     res.send(response)
   })
 
-  app.put('/guilds/:id&code=:code', async (req, res) => {
+  app.put('/api/guilds/:id&code=:code', async (req, res) => {
     const code = req.params.code
     const guild: Guild = req.body
 
@@ -67,7 +67,7 @@ export async function GuildRoutes (app: Application) {
     res.send(response)
   })
 
-  app.delete('/guilds/:id&code=:code', async (req, res) => {
+  app.delete('/api/guilds/:id&code=:code', async (req, res) => {
     const code = req.params.code
 
     if (code !== config.code) {
@@ -99,7 +99,7 @@ export async function GuildRoutes (app: Application) {
     res.send(responses)
   })
 
-  app.put('/guilds/:id/settings&code=:code', async (req, res) => {
+  app.put('/api/guilds/:id/settings&code=:code', async (req, res) => {
     const code = req.params.code
     const settings: GuildSettings = req.body
 

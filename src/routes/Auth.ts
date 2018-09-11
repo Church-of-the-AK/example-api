@@ -44,7 +44,7 @@ export function AuthRoutes (app: Application) {
   const userRepository = getRepository(User)
   app.use(passport.initialize())
 
-  app.get('/discordauth', async (req, res) => {
+  app.get('/api/discordauth', async (req, res) => {
     const redirect = req.query.redirect
     const code = req.query.code
 
@@ -110,13 +110,13 @@ export function AuthRoutes (app: Application) {
     return res.send([accessToken, { jwt: token }])
   })
 
-  app.post('/steamauth',
+  app.post('/api/steamauth',
     passport.authenticate('openid', {
       session: false
     })
   )
 
-  app.get('/steamauth/return', passport.authenticate('openid'), async (req, res) => {
+  app.get('/api/steamauth/return', passport.authenticate('openid'), async (req, res) => {
     if (req.user) {
       return res.redirect(`https://www.macho.ninja/?steamid=${req.user.steamId}`)
     }
@@ -124,21 +124,21 @@ export function AuthRoutes (app: Application) {
     res.send('Failed')
   })
 
-  app.get('/steamauth/id/:id', async (req, res) => {
+  app.get('/api/steamauth/id/:id', async (req, res) => {
     const { data: { response: { players: steamUser } } } = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${
       steamApiKey}&format=json&steamids=${req.params.id}`)
 
     res.send(steamUser[0])
   })
 
-  app.get('/steamauth/ids/:ids', async (req, res) => {
+  app.get('/api/steamauth/ids/:ids', async (req, res) => {
     const { data: { response: { players: steamUsers } } } = await axios.get(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${
       steamApiKey}&format=json&steamids=${req.params.ids}`)
 
     res.send(steamUsers)
   })
 
-  app.get('/githubauth/access_token', async (req, res) => {
+  app.get('/api/githubauth/access_token', async (req, res) => {
     const code = req.query.code
     const post = {
       client_id: github.clientId,
