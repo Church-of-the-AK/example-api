@@ -3,7 +3,7 @@ import * as bodyParser from 'body-parser'
 import * as morgan from 'morgan'
 import * as https from 'https'
 import { readFileSync } from 'fs'
-import { User, UserBalance, UserLevel, UserLinks, UserGithubLinks, UserSteamLinks, Guild, GuildSettings } from 'machobot-database'
+import * as database from 'machobot-database'
 import { db } from './config/config'
 import { createConnection } from 'typeorm'
 import { route } from './routes'
@@ -38,7 +38,8 @@ async function connect () {
     username: db.user,
     password: db.password,
     database: db.database,
-    entities: [ User, UserBalance, UserLevel, UserLinks, UserGithubLinks, UserSteamLinks, Guild, GuildSettings ]
+    entities: [ database.User, database.UserBalance, database.UserLevel, database.UserLinks, database.UserGithubLinks, database.UserSteamLinks,
+      database.Guild, database.GuildSettings ]
   })
 
   await connection.synchronize()
