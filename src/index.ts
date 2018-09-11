@@ -1,6 +1,8 @@
 import * as express from 'express'
 import * as bodyParser from 'body-parser'
 import * as morgan from 'morgan'
+import * as https from 'https'
+import { readFileSync } from 'fs'
 import { User, UserBalance, UserLevel, UserLinks, UserGithubLinks, UserSteamLinks, Guild, GuildSettings } from 'machobot-database'
 import { db } from './config/config'
 import { createConnection } from 'typeorm'
@@ -20,7 +22,10 @@ app.use(function (req, res, next) {
 connect().then(() => {
   route(app)
 
-  app.listen(port, () => {
+  https.createServer({
+    key: readFileSync('/etc/letsencrypt/live/www.macho.ninja/fullchain.pem'),
+    cert: readFileSync('/etc/letsencrypt/live/www.macho.ninja/privkey.pem')
+  }, app).listen(port, function () {
     console.log(`Listening on port ${port}`)
   })
 })
