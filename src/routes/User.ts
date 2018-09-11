@@ -233,7 +233,7 @@ export async function UserRoutes (app: Application) {
     }
 
     user.links.steam.userId = steamId
-    await userSteamLinksRepository.save(user.links.steam)
+    await userRepository.save(user)
 
     console.log('Successful')
     return res.send('Successful')
@@ -282,7 +282,7 @@ export async function UserRoutes (app: Application) {
     }
 
     user.links.github.username = githubId
-    await userGithubLinksRepository.save(user.links.github)
+    await userRepository.save(user)
 
     console.log('Successful')
     return res.send('Successful')
