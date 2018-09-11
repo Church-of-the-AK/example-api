@@ -276,7 +276,7 @@ export async function UserRoutes (app: Application) {
 
     const same = await userGithubLinksRepository.findOne({ where: { username: githubId } })
 
-    if (same.username === githubId) {
+    if (same) {
       console.log('Account already linked.')
       return res.send({ error: 'Account is already linked to another user.' })
     }
