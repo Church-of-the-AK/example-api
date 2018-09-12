@@ -12,8 +12,8 @@ const SteamStrategy = new Strategy(
   {
     providerURL: 'https://steamcommunity.com/openid',
     stateless: true,
-    returnURL: 'https://www.macho.ninja:8000/steamauth/return',
-    realm: 'https://www.macho.ninja:8000/'
+    returnURL: 'https://www.macho.ninja:8000/api/steamauth/return',
+    realm: 'https://www.macho.ninja:8000'
   },
   (identifier, done) => {
     process.nextTick(function () {
