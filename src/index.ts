@@ -23,8 +23,8 @@ connect().then(connection => {
   route(app)
 
   https.createServer({
-    key: readFileSync('/etc/letsencrypt/live/www.macho.ninja/privkey.pem', 'utf8'),
-    cert: readFileSync('/etc/letsencrypt/live/www.macho.ninja/cert.pem', 'utf8')
+    key: readFileSync('/etc/letsencrypt/live/www.macho.ninja/privkey.pem'),
+    cert: readFileSync('/etc/letsencrypt/live/www.macho.ninja/cert.pem')
   }, app).listen(port, function () {
     console.log(`Listening on port ${port}`)
   })
