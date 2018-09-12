@@ -2,6 +2,7 @@ import * as express from 'express'
 import * as bodyParser from 'body-parser'
 import * as morgan from 'morgan'
 import * as https from 'https'
+import * as http from 'http'
 import { readFileSync } from 'fs'
 import * as database from 'machobot-database'
 import { db } from './config/config'
@@ -19,8 +20,10 @@ app.use(function (req, res, next) {
   next()
 })
 
-connect().then(() => {
+connect().then(connection => {
   route(app)
+
+  http.createServer(app).listen(port)
 
   https.createServer({
     key: readFileSync('/etc/letsencrypt/live/www.macho.ninja/privkey.pem'),
