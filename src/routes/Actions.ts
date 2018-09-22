@@ -18,7 +18,7 @@ export async function ActionRoutes (app: Application) {
     const diffHrs = user.balance.dateClaimedDailies ? Math.abs(new Date().getTime() - parseInt(user.balance.dateClaimedDailies)) / 36e5 : 24
 
     if (diffHrs < 24) {
-      return res.send({ success: false, error: 'time', hoursLeft: diffHrs })
+      return res.send({ success: false, error: 'time', hoursLeft: 24 - diffHrs })
     }
 
     user.balance.balance += 200
