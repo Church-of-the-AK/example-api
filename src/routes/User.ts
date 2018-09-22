@@ -248,27 +248,23 @@ export async function UserRoutes (app: Application) {
     try {
       decodedApiToken = jwt.verify(apiToken, publicRSA)
     } catch (err) {
-      console.log('Invalid JWT.')
-      return res.send({ error: 'Invalid JWT.' })
+      return res.send({ error: 'token' })
     }
 
     if (decodedApiToken.userId !== discordId) {
-      console.log(`Tried to link to another Discord account.\nDifference: ${decodedApiToken.userId} != ${discordId}`)
-      return res.send({ error: 'Invalid JWT.' })
+      return res.send({ error: 'token' })
     }
 
     const user = await userRepository.findOne(discordId, { relations: [ 'links' ], select: [ 'accessToken', 'links' ] })
 
     if (!user) {
-      console.log('User doesn\'t exist.')
-      return res.send({ error: 'User doesn\'t exist.' })
+      return res.send({ error: 'user_not_found' })
     }
 
     const accessToken = user.accessToken
 
     if (decodedApiToken.accessToken !== accessToken) {
-      console.log(`Access Token was incorrect\n${decodedApiToken.accessToken} !== ${accessToken}`)
-      return res.send({ error: 'Invalid JWT.' })
+      return res.send({ error: 'token' })
     }
 
     const same = await userGithubLinksRepository.findOne({ where: { username: githubId } })
