@@ -7,7 +7,7 @@ import * as fs from 'fs'
 export async function ActionRoutes (app: Application) {
   const userRepository = getRepository(User)
 
-  app.get('/api/actions/dailies', async (req, res) => {
+  app.post('/api/actions/dailies', async (req, res) => {
     const apiToken: string = req.query.jwt
     const user = await verifyJwt(apiToken, userRepository)
 
