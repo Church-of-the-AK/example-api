@@ -47,7 +47,7 @@ async function verifyJwt (token: string, userRepository: Repository<User>) {
     return false
   }
 
-  const user = await userRepository.findOne(decodedApiToken.userId, { select: [ 'accessToken' ] })
+  const user = await userRepository.findOne(decodedApiToken.userId, { relations: [ 'balance' ], select: [ 'accessToken' ] })
 
   if (!user) {
     return false
