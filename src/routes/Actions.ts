@@ -1,11 +1,12 @@
 import { Application } from 'express'
 import { getRepository, Repository } from 'typeorm'
-import { User } from 'machobot-database'
+import { User, UserBalance } from 'machobot-database'
 import * as jwt from 'jsonwebtoken'
 import * as fs from 'fs'
 
 export async function ActionRoutes (app: Application) {
   const userRepository = getRepository(User)
+  const userBalanceRepository = getRepository(UserBalance)
 
   app.post('/api/actions/dailies', async (req, res) => {
     const apiToken: string = req.query.jwt
@@ -25,11 +26,11 @@ export async function ActionRoutes (app: Application) {
     user.balance.netWorth += 200
     user.balance.dateClaimedDailies = new Date().getTime().toString()
 
-    const response = await userRepository.save(user).catch(error => {
+    const response = await userBalanceRepository.save(user.balance).catch(error => {
       return { error }
     })
 
-    if (!(response instanceof User)) {
+    if (!(response instanceof UserBalance)) {
       return res.send({ success: false, error: response.error })
     }
 
