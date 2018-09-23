@@ -25,12 +25,12 @@ export async function ActionRoutes (app: Application) {
     user.balance.netWorth += 200
     user.balance.dateClaimedDailies = new Date().getTime().toString()
 
-    const response = await userRepository.save(user).catch(() => {
-      return
+    const response = await userRepository.save(user).catch(error => {
+      return { error }
     })
 
-    if (!response) {
-      return res.send({ success: false, error: 'database' })
+    if (!(response instanceof User)) {
+      return res.send({ success: false, error: response.error })
     }
 
     return res.send({ success: true, balance: user.balance.balance })
