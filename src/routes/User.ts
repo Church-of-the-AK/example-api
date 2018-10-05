@@ -15,7 +15,7 @@ export async function UserRoutes (app: Application) {
 
   app.get('/api/users', async (req, res) => {
     const page = req.query.page ? req.query.page : 0
-    const users = await userRepository.find({ take: 100, skip: (page - 1) * 100 })
+    const users = await userRepository.find({ take: 100, skip: page * 100 })
 
     res.send(users)
   })
