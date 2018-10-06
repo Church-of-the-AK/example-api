@@ -11,5 +11,6 @@ export async function DBLRoutes (app: Application) {
     }
 
     console.log(req.body)
+    res.send('Done')
   })
 }
