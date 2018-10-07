@@ -22,7 +22,7 @@ export async function DBLRoutes (app: Application) {
       return res.send('Test complete')
     }
 
-    const user = await userRepository.findOne(data.user)
+    const user = await userRepository.findOne(data.user, { relations: [ 'balance' ] })
 
     if (!user) {
       console.log('User voted but doesn\'t exist.')
