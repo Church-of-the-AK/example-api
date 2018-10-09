@@ -13,7 +13,7 @@ export async function SearchRoutes (app: Application) {
     }
 
     const users = await userRepository.createQueryBuilder()
-      .where('LOWER(name) LIKE LOWER(:query)', { query })
+      .where('LOWER(name) LIKE LOWER(:query)', { query: `%${query}%` })
       .getMany()
 
     return res.send(users)
