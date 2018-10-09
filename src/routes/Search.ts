@@ -12,7 +12,9 @@ export async function SearchRoutes (app: Application) {
       return res.send({ success: false, error: 'no_query' })
     }
 
-    const users = await userRepository.find({ where: { name: Like(`%${query}%`) }, take: 100 })
+    const users = await userRepository.createQueryBuilder()
+      .where('LOWER(name) LIKE LOWER(:query)', { query })
+      .getMany()
 
     return res.send(users)
   })
