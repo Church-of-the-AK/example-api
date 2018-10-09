@@ -283,6 +283,7 @@ export async function UserRoutes (app: Application) {
   })
 
   app.get('/api/users/search', async (req, res) => {
+    console.log('search')
     const query: string = req.query.q
 
     if (!query) {
