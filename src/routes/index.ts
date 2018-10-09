@@ -4,6 +4,7 @@ import { AuthRoutes } from './Auth'
 import { GuildRoutes } from './Guild'
 import { ActionRoutes } from './Actions'
 import { DBLRoutes } from './DBL'
+import { SearchRoutes } from './Search'
 
 export function route (app: Application) {
   UserRoutes(app)
@@ -11,4 +12,5 @@ export function route (app: Application) {
   GuildRoutes(app)
   ActionRoutes(app)
   DBLRoutes(app)
+  SearchRoutes(app)
 }
