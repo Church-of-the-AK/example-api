@@ -198,7 +198,7 @@ export async function UserRoutes (app: Application) {
       return res.send({ success: false, error: 'no_query' })
     }
 
-    const users = await userRepository.find({ where: { name: Like(`%${query}%`) } })
+    const users = await userRepository.find({ where: { name: query } })
 
     return res.send(users)
   })
