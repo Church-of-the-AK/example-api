@@ -1,5 +1,5 @@
 import { Application } from 'express'
-import { getRepository } from 'typeorm'
+import { getRepository, Like } from 'typeorm'
 import { User, UserLevel, UserBalance, UserLinks, UserSteamLinks, UserGithubLinks } from 'machobot-database'
 import * as config from '../config/config'
 import * as fs from 'fs'
@@ -280,5 +280,17 @@ export async function UserRoutes (app: Application) {
 
     console.log('Successful')
     return res.send('Successful')
+  })
+
+  app.get('/api/users/search', async (req, res) => {
+    const query: string = req.query.query
+
+    if (!query) {
+      return res.send({ success: false, error: 'no_query' })
+    }
+
+    const users = await userRepository.find({ where: { name: Like(`%${query}%`) } })
+
+    res.send(users)
   })
 }
