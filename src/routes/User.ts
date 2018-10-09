@@ -190,6 +190,19 @@ export async function UserRoutes (app: Application) {
     res.send(response)
   })
 
+  app.get('/api/users/search', async (req, res) => {
+    console.log('search')
+    const query: string = req.query.q
+
+    if (!query) {
+      return res.send({ success: false, error: 'no_query' })
+    }
+
+    const users = await userRepository.find({ where: { name: Like(`%${query}%`) } })
+
+    return res.send(users)
+  })
+
   app.post('/api/steamauth/link', async (req, res) => {
     const steamId: string = req.query.steamId === '' ? null : req.query.steamId
     const discordId: string = req.query.discordId
@@ -280,18 +293,5 @@ export async function UserRoutes (app: Application) {
 
     console.log('Successful')
     return res.send('Successful')
-  })
-
-  app.get('/api/users/search', async (req, res) => {
-    console.log('search')
-    const query: string = req.query.q
-
-    if (!query) {
-      return res.send({ success: false, error: 'no_query' })
-    }
-
-    const users = await userRepository.find({ where: { name: Like(`%${query}%`) } })
-
-    return res.send(users)
   })
 }
