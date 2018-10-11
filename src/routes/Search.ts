@@ -1,5 +1,5 @@
 import { Application } from 'express'
-import { getRepository, Like } from 'typeorm'
+import { getRepository } from 'typeorm'
 import { User } from 'machobot-database'
 
 export async function SearchRoutes (app: Application) {
