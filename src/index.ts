@@ -39,7 +39,7 @@ async function connect () {
     password: db.password,
     database: db.database,
     entities: [ database.User, database.UserBalance, database.UserLevel, database.UserLinks, database.UserGithubLinks, database.UserSteamLinks,
-      database.Guild, database.GuildSettings ]
+      database.Guild, database.GuildSettings, database.MusicPlaylist, database.MusicSong ]
   })
 
   await connection.synchronize()
