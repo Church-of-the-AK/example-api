@@ -5,6 +5,7 @@ import { GuildRoutes } from './Guild'
 import { ActionRoutes } from './Actions'
 import { DBLRoutes } from './DBL'
 import { SearchRoutes } from './Search'
+import { MusicRoutes } from './Music'
 
 export function route (app: Application) {
   UserRoutes(app)
@@ -13,4 +14,5 @@ export function route (app: Application) {
   ActionRoutes(app)
   DBLRoutes(app)
   SearchRoutes(app)
+  MusicRoutes(app)
 }

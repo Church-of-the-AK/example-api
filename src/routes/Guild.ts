@@ -19,7 +19,7 @@ export async function GuildRoutes (app: Application) {
     res.send(guild)
   })
 
-  app.get('/api/api/guilds/:id/settings', async (req, res) => {
+  app.get('/api/guilds/:id/settings', async (req, res) => {
     const guild = await guildRepository.findOne(req.params.id, { relations: [ 'settings' ] })
 
     if (!guild) {
