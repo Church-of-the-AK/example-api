@@ -19,18 +19,8 @@ export async function MusicRoutes (app: Application) {
   })
 
   app.get('/api/music/playlist/:id', async (req, res) => {
-    const playlist = await playlistRepository.findOne(req.params.id)
-    res.send(playlist)
-  })
-
-  app.get('/api/music/playlist/:id/songs', async (req, res) => {
     const playlist = await playlistRepository.findOne(req.params.id, { relations: [ 'songs' ] })
-
-    if (!playlist) {
-      return res.send('')
-    }
-
-    res.send(playlist.songs)
+    res.send(playlist)
   })
 
   app.post('/api/music/song&code=:code', async (req, res) => {
