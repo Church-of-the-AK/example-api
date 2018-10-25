@@ -62,6 +62,12 @@ export async function MusicRoutes (app: Application) {
     }
 
     const playlist = new MusicPlaylist(playlistReq)
+    const alreadyExists = await playlistRepository.find({ where: { name: playlist.name, user: { id: playlist.user.id } } })
+
+    if (alreadyExists) {
+      return res.send({ error: 'already_exists' })
+    }
+
     const response = await playlistRepository.save(playlist).catch(error => {
       console.log(error)
       return error
