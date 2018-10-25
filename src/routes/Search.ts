@@ -22,15 +22,19 @@ export async function SearchRoutes (app: Application) {
 
   app.get('/api/search/playlists', async (req, res) => {
     const query: string = req.query.query
+    const userId: string = req.query.userId
 
     if (!query) {
       return res.send({ success: false, error: 'no_query' })
     }
 
-    const users = await playlistRepository.createQueryBuilder()
-      .where('LOWER(name) LIKE LOWER(:query)', { query: `%${query}%` })
-      .getMany()
+    if (!userId) {
+      return res.send({ success: false, error: 'no_userId' })
+    }
 
-    return res.send(users)
+    const playlists = (await userRepository.findOne(userId, { relations: [ 'playlists' ] })).playlists
+    const playlist = playlists.find(playlist => playlist.name.toLowerCase().startsWith(query.toLowerCase()))
+
+    return res.send(playlist)
   })
 }
