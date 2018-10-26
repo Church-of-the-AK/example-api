@@ -52,8 +52,9 @@ export async function MusicRoutes (app: Application) {
     }
 
     const playlist = new MusicPlaylist(playlistReq)
-    // @ts-ignore
-    const alreadyExists = await MusicPlaylist.findOne({ user: { id: playlist.user.id }, name: playlist.name })
+    const alreadyExists = await playlistRepository.createQueryBuilder()
+      .where('userId = :userId', { userId: playlist.user.id })
+      .andWhere('LOWER(name) = LOWER(:name)', { name: playlist.name }).getOne()
 
     if (alreadyExists) {
       return res.send({ error: 'already_exists' })
