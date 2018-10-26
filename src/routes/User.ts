@@ -56,6 +56,16 @@ export async function UserRoutes (app: Application) {
     res.send(user.links)
   })
 
+  app.get('/api/users/:id/playlists', async (req, res) => {
+    const user = await userRepository.findOne(req.params.id, { relations: [ 'playlists' ] })
+
+    if (!user) {
+      return res.send('')
+    }
+
+    res.send(user.playlists)
+  })
+
   app.post('/api/users&code=:code', async (req, res) => {
     const code = req.params.code
     const userReq = req.body
