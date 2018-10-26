@@ -33,7 +33,8 @@ export async function SearchRoutes (app: Application) {
     }
 
     const playlists = (await userRepository.findOne(userId, { relations: [ 'playlists' ] })).playlists
-    const playlist = playlists.find(playlist => playlist.name.toLowerCase() === query.toLowerCase())
+    const playlist1 = playlists.find(playlist => playlist.name.toLowerCase() === query.toLowerCase())
+    const playlist = await playlistRepository.findOne(playlist1.id, { relations: [ 'songs' ] })
 
     return res.send(playlist)
   })
