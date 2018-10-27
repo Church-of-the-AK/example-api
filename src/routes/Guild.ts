@@ -1,11 +1,12 @@
 import { Application } from 'express'
 import { getRepository } from 'typeorm'
-import { Guild, GuildSettings } from 'machobot-database'
+import { Guild, GuildSettings, GuildTag } from 'machobot-database'
 import * as config from '../config/config'
 
 export async function GuildRoutes (app: Application) {
   const guildRepository = getRepository(Guild)
   const guildSettingsRepository = getRepository(GuildSettings)
+  const guildTagsRepository = getRepository(GuildTag)
 
   app.get('/api/guilds', async (req, res) => {
     const guilds = await guildRepository.find()
@@ -15,7 +16,6 @@ export async function GuildRoutes (app: Application) {
 
   app.get('/api/guilds/:id', async (req, res) => {
     const guild = await guildRepository.findOne(req.params.id, { relations: [ 'settings' ] })
-
     res.send(guild)
   })
 
@@ -27,6 +27,28 @@ export async function GuildRoutes (app: Application) {
     }
 
     res.send(guild.settings)
+  })
+
+  app.get('/api/guilds/:id/tags', async (req, res) => {
+    const guild = await guildRepository.findOne(req.params.id, { relations: [ 'tags' ] })
+
+    if (!guild) {
+      return res.send('')
+    }
+
+    res.send(guild.tags)
+  })
+
+  app.get('/api/guilds/:id/tags/:tagId', async (req, res) => {
+    const guild = await guildRepository.findOne(req.params.id, { relations: [ 'tags' ] })
+
+    if (!guild) {
+      return res.send('')
+    }
+
+    const tag = guild.tags.find(tag => tag.id === Number(req.params.id))
+
+    res.send(tag ? tag : '')
   })
 
   app.post('/api/guilds&code=:code', async (req, res) => {
@@ -109,6 +131,67 @@ export async function GuildRoutes (app: Application) {
     }
 
     const response = await guildSettingsRepository.save(settings).catch(error => {
+      console.log(error)
+      return error
+    })
+
+    res.send(response)
+  })
+
+  app.put('/api/guilds/:id/tags&code=:code', async (req, res) => {
+    const code = req.params.code
+    const tag: GuildTag = req.body
+
+    if (code !== config.code) {
+      res.statusCode = 401
+      return res.send({ code: 401, message: 'invalid code' })
+    }
+
+    const guild = await guildRepository.findOne(req.params.id, { relations: [ 'tags' ] })
+
+    if (!guild) {
+      return res.send('')
+    }
+
+    const existing = guild.tags.find(tag1 => tag1.name === tag.name)
+
+    if (existing) {
+      existing.content = tag.content
+
+      const response = await guildTagsRepository.save(existing).catch(error => {
+        console.log(error)
+        return error
+      })
+
+      return res.send(response)
+    }
+
+    guild.tags.push(tag)
+
+    const response = await guildRepository.save(guild).catch(error => {
+      console.log(error)
+      return error
+    })
+
+    res.send(response)
+  })
+
+  app.delete('/api/guilds/:id/tags/:tagId&code=:code', async (req, res) => {
+    const code = req.params.code
+
+    if (code !== config.code) {
+      res.statusCode = 401
+      return res.send({ code: 401, message: 'invalid code' })
+    }
+
+    const guild = await guildRepository.findOne(req.params.id, { relations: [ 'tags' ] })
+
+    if (!guild) {
+      return res.send('')
+    }
+
+    const tag = guild.tags.find(tag => tag.id === Number(req.params.id))
+    const response = await guildTagsRepository.remove(tag).catch(error => {
       console.log(error)
       return error
     })

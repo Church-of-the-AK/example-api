@@ -1,10 +1,11 @@
 import { Application } from 'express'
 import { getRepository } from 'typeorm'
-import { User, MusicPlaylist } from 'machobot-database'
+import { User, MusicPlaylist, Guild } from 'machobot-database'
 
 export async function SearchRoutes (app: Application) {
   const userRepository = getRepository(User)
   const playlistRepository = getRepository(MusicPlaylist)
+  const guildRepository = getRepository(Guild)
 
   app.get('/api/search/users', async (req, res) => {
     const query: string = req.query.query
@@ -42,5 +43,27 @@ export async function SearchRoutes (app: Application) {
     const playlist = await playlistRepository.findOne(playlist1.id, { relations: [ 'songs' ] })
 
     return res.send(playlist)
+  })
+
+  app.get('/api/search/tags', async (req, res) => {
+    const query: string = req.query.query
+    const guildId: string = req.query.guildId
+
+    if (!query) {
+      return res.send({ success: false, error: 'no_query' })
+    }
+
+    if (!guildId) {
+      return res.send({ success: false, error: 'no_guildId' })
+    }
+
+    const tags = (await guildRepository.findOne(guildId, { relations: [ 'tags' ] })).tags
+    const tag = tags.find(tag => tag.name.toLowerCase() === query.toLowerCase())
+
+    if (!tag) {
+      return res.send('')
+    }
+
+    return res.send(tag)
   })
 }
