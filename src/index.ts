@@ -1,7 +1,7 @@
 import * as express from 'express'
-import { urlencoded, json } from 'body-parser'
+import * as bodyParser from 'body-parser'
 import * as morgan from 'morgan'
-import { createServer } from 'https'
+import * as https from 'https'
 import { readFileSync } from 'fs'
 import { db } from './config/config'
 import { createConnection } from 'typeorm'
@@ -10,8 +10,8 @@ import { route } from './routes'
 const app = express()
 const port = 8000
 
-app.use(urlencoded({ extended: true }))
-app.use(json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 app.use(morgan(':method :url :status :res[content] - :response-time ms'))
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
@@ -21,7 +21,7 @@ app.use(function (req, res, next) {
 connect().then(connection => {
   route(app)
 
-  createServer({
+  https.createServer({
     key: readFileSync('/etc/letsencrypt/live/www.macho.ninja/privkey.pem'),
     cert: readFileSync('/etc/letsencrypt/live/www.macho.ninja/fullchain.pem')
   }, app).listen(port, function () {
