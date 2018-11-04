@@ -39,22 +39,18 @@ export async function ActionRoutes (app: Application) {
 }
 
 async function verifyJwt (token: string, userRepository: Repository<User>) {
-  const publicRSA = await fs.readFileSync('./src/config/id_rsa.pub.pem')
+  const privateRsa = await fs.readFileSync('./src/config/id_rsa.pem')
   let decodedApiToken
 
   try {
-    decodedApiToken = jwt.verify(token, publicRSA)
+    decodedApiToken = jwt.verify(token, privateRsa)
   } catch (err) {
     return false
   }
 
-  const user = await userRepository.findOne(decodedApiToken.userId, { relations: [ 'balance' ], select: [ 'accessToken' ] })
+  const user = await userRepository.findOne({ where: { accessToken: decodedApiToken.accessToken } })
 
   if (!user) {
-    return false
-  }
-
-  if (user.accessToken !== decodedApiToken.accessToken) {
     return false
   }
 
