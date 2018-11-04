@@ -84,9 +84,9 @@ export function AuthRoutes (app: Application) {
         userId: discordUser.id,
         accessToken: accessToken.access_token
       }
-      const publicRsa = fs.readFileSync('./src/config/id_rsa.pub.pem')
+      const privateRsa = fs.readFileSync('./src/config/id_rsa.pem')
 
-      const token = jwt.sign(apiCreds, publicRsa, {
+      const token = jwt.sign(apiCreds, privateRsa, {
         expiresIn: '7d',
         algorithm: 'RS256'
       })
@@ -100,9 +100,9 @@ export function AuthRoutes (app: Application) {
       userId: discordUser.id,
       accessToken: accessToken.access_token
     }
-    const publicRsa = fs.readFileSync('./src/config/id_rsa.pub.pem')
+    const privateRsa = fs.readFileSync('./src/config/id_rsa.pem')
 
-    const token = jwt.sign(apiCreds, publicRsa, {
+    const token = jwt.sign(apiCreds, privateRsa, {
       expiresIn: '7d',
       algorithm: 'RS256'
     })

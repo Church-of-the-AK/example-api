@@ -39,11 +39,11 @@ export async function ActionRoutes (app: Application) {
 }
 
 async function verifyJwt (token: string, userRepository: Repository<User>) {
-  const privateRsa = await fs.readFileSync('./src/config/id_rsa.pem')
+  const publicRsa = fs.readFileSync('./src/config/id_rsa.pub.pem')
   let decodedApiToken
 
   try {
-    decodedApiToken = jwt.verify(token, privateRsa)
+    decodedApiToken = jwt.verify(token, publicRsa)
   } catch (err) {
     return false
   }

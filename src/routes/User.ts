@@ -204,11 +204,11 @@ export async function UserRoutes (app: Application) {
     const steamId: string = req.query.steamId === '' ? null : req.query.steamId
     const discordId: string = req.query.discordId
     const apiToken: string = req.query.jwt
-    const privateRsa = fs.readFileSync('./src/config/id_rsa.pem')
+    const publicRsa = fs.readFileSync('./src/config/id_rsa.pub.pem')
     let decodedApiToken
 
     try {
-      decodedApiToken = jwt.verify(apiToken, privateRsa)
+      decodedApiToken = jwt.verify(apiToken, publicRsa)
     } catch (err) {
       console.log('Invalid JWT.')
       return res.send('Invalid JWT.')
@@ -253,11 +253,11 @@ export async function UserRoutes (app: Application) {
     const githubId: string = req.query.githubId === '' ? null : req.query.githubId
     const discordId: string = req.query.discordId
     const apiToken: string = req.query.jwt
-    const privateRsa = fs.readFileSync('./src/config/id_rsa.pem')
+    const publicRsa = fs.readFileSync('./src/config/id_rsa.pub.pem')
     let decodedApiToken
 
     try {
-      decodedApiToken = jwt.verify(apiToken, privateRsa)
+      decodedApiToken = jwt.verify(apiToken, publicRsa)
     } catch (err) {
       return res.send({ error: 'token' })
     }
