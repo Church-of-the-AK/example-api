@@ -14,8 +14,9 @@ export async function UserRoutes (app: Application) {
   const userGithubLinksRepository = getRepository(UserGithubLinks)
 
   app.get('/api/users', async (req, res) => {
-    const page = req.query.page ? req.query.page : 0
-    const users = await userRepository.find({ take: 100, skip: page * 100 })
+    const skip = req.query.skip ? req.query.skip : 0
+    const take = randomIntFromInterval(40, 50)
+    const users = await userRepository.find({ take, skip })
 
     res.send(users)
   })
@@ -291,4 +292,8 @@ export async function UserRoutes (app: Application) {
     console.log('Successful')
     return res.send('Successful')
   })
+}
+
+function randomIntFromInterval (min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1) + min)
 }
