@@ -78,6 +78,11 @@ export async function UserRoutes (app: Application) {
 
     const user = new User(userReq)
 
+    if (await userRepository.findOne(user.id)) {
+      res.statusCode = 409
+      return res.send({ error: 'already_exists' })
+    }
+
     user.level = new UserLevel()
     user.balance = new UserBalance()
     user.links = new UserLinks()

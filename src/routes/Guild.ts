@@ -61,6 +61,12 @@ export async function GuildRoutes (app: Application) {
     }
 
     const guild = new Guild(guildReq)
+
+    if (await guildRepository.findOne(guild.id)) {
+      res.statusCode = 409
+      return res.send({ error: 'already_exists' })
+    }
+
     guild.settings = new GuildSettings()
 
     const response = await guildRepository.save(guild).catch(error => {
