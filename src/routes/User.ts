@@ -247,8 +247,10 @@ export async function UserRoutes (app: Application) {
       return res.send({ error: 'Account is already linked to another user.' })
     }
 
-    user.links.steam.userId = steamId
-    await userRepository.save(user)
+    const steamLinks = await userSteamLinksRepository.findOne({ where: { links: { user: { id: discordId } } } })
+    steamLinks.userId = steamId
+
+    await userSteamLinksRepository.save(steamLinks)
 
     return res.send('Successful')
   })
