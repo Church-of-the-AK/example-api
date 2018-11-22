@@ -207,7 +207,7 @@ export async function UserRoutes (app: Application) {
   })
 
   app.post('/api/steamauth/link', async (req, res) => {
-    const steamId: string = req.query.steamId === '' ? null : req.query.steamId
+    const steamId: string = req.query.steamId
     const discordId: string = req.query.discordId
     const apiToken: string = req.query.jwt
     const publicRsa = fs.readFileSync('./src/config/id_rsa.pub.pem')
@@ -247,10 +247,10 @@ export async function UserRoutes (app: Application) {
       return res.send({ error: 'Account is already linked to another user.' })
     }
 
-    const steamLinks = await userSteamLinksRepository.findOne({ where: { links: { user: { id: discordId } } } })
-    steamLinks.userId = steamId
+    const links = await userLinksRepository.findOne({ where: { user: { id: discordId } }, relations: [ 'steam' ] })
+    links.steam.userId = steamId
 
-    await userSteamLinksRepository.save(steamLinks)
+    await userLinksRepository.save(links)
 
     return res.send('Successful')
   })
