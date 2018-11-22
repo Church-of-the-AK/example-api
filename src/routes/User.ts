@@ -250,7 +250,7 @@ export async function UserRoutes (app: Application) {
     const links = await userLinksRepository.findOne({ where: { user: { id: discordId } }, relations: [ 'steam' ] })
     links.steam.userId = steamId
 
-    await userLinksRepository.save(links)
+    await userLinksRepository.update(links.id, links)
 
     return res.send('Successful')
   })
