@@ -48,13 +48,13 @@ export async function UserRoutes (app: Application) {
   })
 
   app.get('/api/users/:id/links', async (req, res) => {
-    const user = await userRepository.findOne(req.params.id, { relations: [ 'links' ] })
+    const links = await userLinksRepository.findOne({ where: { user: { id: req.params.id } } })
 
-    if (!user) {
+    if (!links) {
       return res.send('')
     }
 
-    res.send(user.links)
+    res.send(links)
   })
 
   app.get('/api/users/:id/playlists', async (req, res) => {
