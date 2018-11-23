@@ -22,8 +22,7 @@ export async function UserRoutes (app: Application) {
   })
 
   app.get('/api/users/:id', async (req, res) => {
-    const user = await userRepository.findOne(req.params.id, { relations: [ 'balance', 'level' ] })
-
+    const user = await userRepository.findOne(req.params.id, { relations: [ 'balance', 'level', 'links' ] })
     res.send(user)
   })
 
@@ -48,13 +47,13 @@ export async function UserRoutes (app: Application) {
   })
 
   app.get('/api/users/:id/links', async (req, res) => {
-    const links = await userLinksRepository.findOne({ where: { user: { id: req.params.id } } })
+    const user = await userRepository.findOne(req.params.id, { relations: [ 'links' ] })
 
-    if (!links) {
+    if (!user) {
       return res.send('')
     }
 
-    res.send(links)
+    res.send(user.links)
   })
 
   app.get('/api/users/:id/playlists', async (req, res) => {
