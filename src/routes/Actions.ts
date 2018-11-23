@@ -1,8 +1,7 @@
 import { Application } from 'express'
-import { getRepository, Repository } from 'typeorm'
+import { getRepository } from 'typeorm'
 import { User, UserBalance } from 'machobot-database'
-import * as jwt from 'jsonwebtoken'
-import * as fs from 'fs'
+import { verifyJwt } from '../util'
 
 export async function ActionRoutes (app: Application) {
   const userRepository = getRepository(User)
@@ -36,23 +35,4 @@ export async function ActionRoutes (app: Application) {
 
     return res.send({ success: true, balance: user.balance.balance })
   })
-}
-
-async function verifyJwt (token: string, userRepository: Repository<User>) {
-  const publicRsa = fs.readFileSync('./src/config/id_rsa.pub.pem')
-  let decodedApiToken
-
-  try {
-    decodedApiToken = jwt.verify(token, publicRsa)
-  } catch (err) {
-    return false
-  }
-
-  const user = await userRepository.findOne({ where: { accessToken: decodedApiToken.accessToken }, relations: [ 'balance' ] })
-
-  if (!user) {
-    return false
-  }
-
-  return user
 }

@@ -1,5 +1,6 @@
 import { Application } from 'express'
-import { getRepository, Like } from 'typeorm'
+import { getRepository } from 'typeorm'
+import { verifyJwt } from '../util'
 import { User, UserLevel, UserBalance, UserLinks, UserSteamLinks, UserGithubLinks } from 'machobot-database'
 import * as config from '../config/config'
 import * as fs from 'fs'
@@ -14,6 +15,13 @@ export async function UserRoutes (app: Application) {
   const userGithubLinksRepository = getRepository(UserGithubLinks)
 
   app.get('/api/users', async (req, res) => {
+    const apiToken: string = req.query.jwt
+    const user = await verifyJwt(apiToken, userRepository)
+
+    if (!user) {
+      return res.send({ success: false, error: 'token' })
+    }
+
     const skip = req.query.skip ? req.query.skip : 0
     const take = randomIntFromInterval(40, 50)
     const users = await userRepository.find({ take, skip })
@@ -22,45 +30,22 @@ export async function UserRoutes (app: Application) {
   })
 
   app.get('/api/users/:id', async (req, res) => {
-    const user = await userRepository.findOne(req.params.id, { relations: [ 'balance', 'level', 'links' ] })
+    const apiToken: string = req.query.jwt
+    const user = await verifyJwt(apiToken, userRepository)
+
+    if (!user || user.id !== req.params.id) {
+      return res.send({ success: false, error: 'token' })
+    }
+
     res.send(user)
   })
 
-  app.get('/api/users/:id/level', async (req, res) => {
-    const user = await userRepository.findOne(req.params.id, { relations: [ 'level' ] })
-
-    if (!user) {
-      return res.send('')
-    }
-
-    res.send(user.level)
-  })
-
-  app.get('/api/users/:id/balance', async (req, res) => {
-    const user = await userRepository.findOne(req.params.id, { relations: [ 'balance' ] })
-
-    if (!user) {
-      return res.send('')
-    }
-
-    res.send(user.balance)
-  })
-
-  app.get('/api/users/:id/links', async (req, res) => {
-    const user = await userRepository.findOne(req.params.id, { relations: [ 'links' ] })
-
-    if (!user) {
-      return res.send('')
-    }
-
-    res.send(user.links)
-  })
-
   app.get('/api/users/:id/playlists', async (req, res) => {
-    const user = await userRepository.findOne(req.params.id, { relations: [ 'playlists' ] })
+    const apiToken: string = req.query.jwt
+    const user = await verifyJwt(apiToken, userRepository)
 
-    if (!user) {
-      return res.send('')
+    if (!user || user.id !== req.params.id) {
+      return res.send({ success: false, error: 'token' })
     }
 
     res.send(user.playlists)
