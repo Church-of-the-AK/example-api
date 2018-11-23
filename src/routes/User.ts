@@ -240,7 +240,7 @@ export async function UserRoutes (app: Application) {
       return res.send({ error: 'Invalid JWT.' })
     }
 
-    const same = await userLinksRepository.findOne({ where: { steam: { userId: steamId } }, select: [ 'user' ] })
+    const same = await userLinksRepository.findOne({ where: { steam: { userId: steamId } }, relations: [ 'user' ] })
 
     if (same && same.user.id !== discordId) {
       console.log('Account already linked.')
