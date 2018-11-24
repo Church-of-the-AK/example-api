@@ -1,24 +1,53 @@
 import { Application } from 'express'
 import { getRepository } from 'typeorm'
-import { MusicPlaylist, MusicSong } from 'machobot-database'
+import { verifyJwt } from '../util'
+import { MusicPlaylist, MusicSong, User } from 'machobot-database'
 import * as config from '../config/config'
 
 export async function MusicRoutes (app: Application) {
   const playlistRepository = getRepository(MusicPlaylist)
   const songRepository = getRepository(MusicSong)
+  const userRepository = getRepository(User)
 
   app.get('/api/music', async (req, res) => {
+    if (!req.query.code || req.query.code !== config.code) {
+      const apiToken: string = req.query.jwt
+      const user = await verifyJwt(apiToken, userRepository)
+
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
+    }
+
     const music = await playlistRepository.find()
 
     res.send(music)
   })
 
   app.get('/api/music/song/:id', async (req, res) => {
+    if (!req.query.code || req.query.code !== config.code) {
+      const apiToken: string = req.query.jwt
+      const user = await verifyJwt(apiToken, userRepository)
+
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
+    }
+
     const song = await songRepository.findOne(req.params.id)
     res.send(song)
   })
 
   app.get('/api/music/playlist/:id', async (req, res) => {
+    if (!req.query.code || req.query.code !== config.code) {
+      const apiToken: string = req.query.jwt
+      const user = await verifyJwt(apiToken, userRepository)
+
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
+    }
+
     const playlist = await playlistRepository.findOne(req.params.id, { relations: [ 'songs' ] })
     res.send(playlist)
   })

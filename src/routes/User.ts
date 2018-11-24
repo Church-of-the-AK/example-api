@@ -15,11 +15,13 @@ export async function UserRoutes (app: Application) {
   const userGithubLinksRepository = getRepository(UserGithubLinks)
 
   app.get('/api/users', async (req, res) => {
-    const apiToken: string = req.query.jwt
-    const user = await verifyJwt(apiToken, userRepository)
+    if (!req.query.code || req.query.code !== config.code) {
+      const apiToken: string = req.query.jwt
+      const user = await verifyJwt(apiToken, userRepository)
 
-    if (!user) {
-      return res.send({ success: false, error: 'token' })
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
     }
 
     const skip = req.query.skip ? req.query.skip : 0
@@ -30,22 +32,36 @@ export async function UserRoutes (app: Application) {
   })
 
   app.get('/api/users/:id', async (req, res) => {
-    const apiToken: string = req.query.jwt
-    const user = await verifyJwt(apiToken, userRepository)
+    let user: User | false | { id: string }
 
-    if (!user || user.id !== req.params.id) {
-      return res.send({ success: false, error: 'token' })
+    if (!req.query.code || req.query.code !== config.code) {
+      const apiToken: string = req.query.jwt
+      user = await verifyJwt(apiToken, userRepository)
+
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
+    } else {
+      user = { id: req.params.id }
     }
 
-    res.send(user)
+    const newUser = await userRepository.findOne(user.id, { relations: [ 'level', 'balance', 'links' ] })
+
+    res.send(newUser)
   })
 
   app.get('/api/users/:id/playlists', async (req, res) => {
-    const apiToken: string = req.query.jwt
-    const user = await verifyJwt(apiToken, userRepository)
+    let user: User | false
 
-    if (!user || user.id !== req.params.id) {
-      return res.send({ success: false, error: 'token' })
+    if (!req.query.code || req.query.code !== config.code) {
+      const apiToken: string = req.query.jwt
+      user = await verifyJwt(apiToken, userRepository)
+
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
+    } else {
+      user = await userRepository.findOne(req.params.id, { relations: [ 'playlists' ] })
     }
 
     res.send(user.playlists)

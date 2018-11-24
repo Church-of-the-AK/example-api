@@ -1,25 +1,54 @@
 import { Application } from 'express'
 import { getRepository } from 'typeorm'
-import { Guild, GuildSettings, GuildTag } from 'machobot-database'
+import { verifyJwt } from '../util'
+import { Guild, GuildSettings, GuildTag, User } from 'machobot-database'
 import * as config from '../config/config'
 
 export async function GuildRoutes (app: Application) {
   const guildRepository = getRepository(Guild)
   const guildSettingsRepository = getRepository(GuildSettings)
   const guildTagsRepository = getRepository(GuildTag)
+  const userRepository = getRepository(User)
 
   app.get('/api/guilds', async (req, res) => {
+    if (!req.query.code || req.query.code !== config.code) {
+      const apiToken: string = req.query.jwt
+      const user = await verifyJwt(apiToken, userRepository)
+
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
+    }
+
     const guilds = await guildRepository.find()
 
     res.send(guilds)
   })
 
   app.get('/api/guilds/:id', async (req, res) => {
+    if (!req.query.code || req.query.code !== config.code) {
+      const apiToken: string = req.query.jwt
+      const user = await verifyJwt(apiToken, userRepository)
+
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
+    }
+
     const guild = await guildRepository.findOne(req.params.id, { relations: [ 'settings' ] })
     res.send(guild)
   })
 
   app.get('/api/guilds/:id/settings', async (req, res) => {
+    if (!req.query.code || req.query.code !== config.code) {
+      const apiToken: string = req.query.jwt
+      const user = await verifyJwt(apiToken, userRepository)
+
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
+    }
+
     const guild = await guildRepository.findOne(req.params.id, { relations: [ 'settings' ] })
 
     if (!guild) {
@@ -30,6 +59,15 @@ export async function GuildRoutes (app: Application) {
   })
 
   app.get('/api/guilds/:id/tags', async (req, res) => {
+    if (!req.query.code || req.query.code !== config.code) {
+      const apiToken: string = req.query.jwt
+      const user = await verifyJwt(apiToken, userRepository)
+
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
+    }
+
     const guild = await guildRepository.findOne(req.params.id, { relations: [ 'tags' ] })
 
     if (!guild) {
@@ -40,6 +78,15 @@ export async function GuildRoutes (app: Application) {
   })
 
   app.get('/api/guilds/:id/tags/:tagId', async (req, res) => {
+    if (!req.query.code || req.query.code !== config.code) {
+      const apiToken: string = req.query.jwt
+      const user = await verifyJwt(apiToken, userRepository)
+
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
+    }
+
     const guild = await guildRepository.findOne(req.params.id, { relations: [ 'tags' ] })
 
     if (!guild) {

@@ -1,6 +1,8 @@
 import { Application } from 'express'
 import { getRepository } from 'typeorm'
+import { verifyJwt } from '../util'
 import { User, MusicPlaylist, Guild } from 'machobot-database'
+import { code } from '../config/config'
 
 export async function SearchRoutes (app: Application) {
   const userRepository = getRepository(User)
@@ -8,6 +10,15 @@ export async function SearchRoutes (app: Application) {
   const guildRepository = getRepository(Guild)
 
   app.get('/api/search/users', async (req, res) => {
+    if (!req.query.code || req.query.code !== code) {
+      const apiToken: string = req.query.jwt
+      const user = await verifyJwt(apiToken, userRepository)
+
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
+    }
+
     const query: string = req.query.query
 
     if (!query) {
@@ -22,6 +33,15 @@ export async function SearchRoutes (app: Application) {
   })
 
   app.get('/api/search/playlists', async (req, res) => {
+    if (!req.query.code || req.query.code !== code) {
+      const apiToken: string = req.query.jwt
+      const user = await verifyJwt(apiToken, userRepository)
+
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
+    }
+
     const query: string = req.query.query
     const userId: string = req.query.userId
 
@@ -46,6 +66,15 @@ export async function SearchRoutes (app: Application) {
   })
 
   app.get('/api/search/tags', async (req, res) => {
+    if (!req.query.code || req.query.code !== code) {
+      const apiToken: string = req.query.jwt
+      const user = await verifyJwt(apiToken, userRepository)
+
+      if (!user) {
+        return res.send({ success: false, error: 'token' })
+      }
+    }
+
     const query: string = req.query.query
     const guildId: string = req.query.guildId
 
